@@ -3,6 +3,20 @@ import SwiftUI
 
 enum BettingRound: Int { case preflop, flop, turn, river, showdown }
 
+/// 屏幕上漂浮的特效气泡（打击感反馈）
+struct FXBubble: Identifiable {
+    let id = UUID()
+    let text: String
+    let colorHex: UInt32  // 用 hex 避免 SwiftUI Color 不可 Equatable 的麻烦
+    let playerIdx: Int?   // nil = 屏幕中央
+    let isBig: Bool       // 大字号 (技能 / All-in)
+    var color: Color {
+        Color(red: Double((colorHex >> 16) & 0xFF) / 255.0,
+              green: Double((colorHex >> 8) & 0xFF) / 255.0,
+              blue: Double(colorHex & 0xFF) / 255.0)
+    }
+}
+
 @MainActor
 final class GameViewModel: ObservableObject {
     // MARK: - Config
@@ -22,9 +36,16 @@ final class GameViewModel: ObservableObject {
     @Published var showSettlement: Bool = false
     @Published var settlementText: String = ""
     @Published var revealAll: Bool = false
-    @Published var pendingSkill: SkillKind?  // 等待选择目标
+    @Published var pendingSkill: SkillKind?
     @Published var statusMessage: String = ""
     @Published var gameOver: Bool = false
+
+    /// 屏幕飘字特效
+    @Published var fxBubbles: [FXBubble] = []
+    /// 当前下注/底池闪烁触发器（每次变动 +1）
+    @Published var potPulse: Int = 0
+    /// 全局震动 / 闪光 trigger
+    @Published var screenShake: Int = 0
 
     private var deck = Deck()
 
@@ -43,14 +64,18 @@ final class GameViewModel: ObservableObject {
                    avatarAssetName: "AI3", chips: startingChips)
         ]
         dealerIndex = 0
+        gameOver = false
         startNewHand()
     }
 
     // MARK: - 新一手牌
     func startNewHand() {
+        // 检查是否还能继续：必须至少 2 个有筹码的玩家
         guard players.filter({ $0.chips > 0 }).count > 1 else {
             gameOver = true
-            settlementText = (players[0].chips > 0) ? "🎉 你赢得了所有筹码！" : "💀 你的筹码归零了"
+            settlementText = (players[0].chips > 0)
+                ? "🎉 你赢得了所有筹码！"
+                : "💀 你的筹码归零了\n\n再来一局？"
             showSettlement = true
             return
         }
@@ -63,6 +88,7 @@ final class GameViewModel: ObservableObject {
         log.removeAll()
         statusMessage = ""
         pendingSkill = nil
+        fxBubbles.removeAll()
 
         for i in players.indices {
             players[i].holeCards.removeAll()
@@ -73,8 +99,9 @@ final class GameViewModel: ObservableObject {
             players[i].shielded = false
             players[i].forcedCall = false
             players[i].revealedByPeek = nil
+            // 改进点 4：每轮开始所有技能立即可用
             for j in players[i].skills.indices {
-                players[i].skills[j].cooldownLeft = max(0, players[i].skills[j].cooldownLeft - 1)
+                players[i].skills[j].cooldownLeft = 0
             }
         }
 
@@ -92,6 +119,7 @@ final class GameViewModel: ObservableObject {
         postBlind(playerIndex: bbIndex, amount: bigBlind)
         currentBet = bigBlind
         activeIndex = nextActive(after: bbIndex)
+        potPulse += 1
 
         appendLog("---- 新一手 ----")
         proceedIfAITurn()
@@ -127,6 +155,13 @@ final class GameViewModel: ObservableObject {
         performAction(idx: activeIndex, action: .raise, raiseTo: amount)
     }
 
+    func playerAllIn() {
+        guard players[activeIndex].kind == .human else { return }
+        let me = players[activeIndex]
+        let target = me.chips + me.currentBet
+        performAction(idx: activeIndex, action: .raise, raiseTo: target)
+    }
+
     func playerFold() {
         guard players[activeIndex].kind == .human else { return }
         if players[activeIndex].forcedCall {
@@ -143,14 +178,22 @@ final class GameViewModel: ObservableObject {
         case .check:
             p.lastAction = .check
             appendLog("\(p.name) 过牌")
+            emitFX(text: "CHECK", colorHex: 0x7DF9FF, playerIdx: idx, big: false)
         case .call:
             let toCall = currentBet - p.currentBet
             let pay = min(toCall, p.chips)
             p.chips -= pay
             p.currentBet += pay
             pot += pay
-            p.lastAction = pay >= toCall ? .call : .allIn
-            if p.chips == 0 { p.isAllIn = true; p.lastAction = .allIn }
+            potPulse += 1
+            if p.chips == 0 {
+                p.isAllIn = true; p.lastAction = .allIn
+                emitFX(text: "ALL-IN!", colorHex: 0xFF3B30, playerIdx: idx, big: true)
+                screenShake += 1
+            } else {
+                p.lastAction = .call
+                emitFX(text: "+\(pay)", colorHex: 0xFFD60A, playerIdx: idx, big: false)
+            }
             appendLog("\(p.name) 跟注 \(pay)")
         case .raise:
             let target = max(currentBet * 2, raiseTo)
@@ -158,14 +201,23 @@ final class GameViewModel: ObservableObject {
             p.chips -= pay
             p.currentBet += pay
             pot += pay
+            potPulse += 1
             currentBet = max(currentBet, p.currentBet)
-            if p.chips == 0 { p.isAllIn = true; p.lastAction = .allIn }
-            else { p.lastAction = .raise }
+            if p.chips == 0 {
+                p.isAllIn = true; p.lastAction = .allIn
+                emitFX(text: "ALL-IN!", colorHex: 0xFF3B30, playerIdx: idx, big: true)
+                screenShake += 1
+            } else {
+                p.lastAction = .raise
+                emitFX(text: "RAISE +\(pay)", colorHex: 0xFF9500, playerIdx: idx, big: true)
+                screenShake += 1
+            }
             appendLog("\(p.name) 加注到 \(p.currentBet)")
         case .fold:
             p.isFolded = true
             p.lastAction = .fold
             appendLog("\(p.name) 弃牌")
+            emitFX(text: "FOLD", colorHex: 0x8E8E93, playerIdx: idx, big: false)
         default: break
         }
         p.forcedCall = false
@@ -175,13 +227,11 @@ final class GameViewModel: ObservableObject {
 
     // MARK: - 推进
     private func advanceTurn() {
-        // 只剩一人未弃牌：直接结算
         let remaining = players.indices.filter { !players[$0].isFolded }
         if remaining.count == 1 {
             settle(winners: remaining, walkover: true)
             return
         }
-        // 是否本轮所有人下注一致
         if isBettingRoundComplete() {
             advanceRound()
             return
@@ -193,7 +243,6 @@ final class GameViewModel: ObservableObject {
     private func isBettingRoundComplete() -> Bool {
         let active = players.indices.filter { !players[$0].isFolded && !players[$0].isAllIn }
         guard !active.isEmpty else { return true }
-        // 所有未弃牌未全下玩家下注一致，且都已行动过
         let allMatched = active.allSatisfy { players[$0].currentBet == currentBet }
         let allActed = active.allSatisfy { players[$0].lastAction != .none }
         return allMatched && allActed
@@ -210,14 +259,17 @@ final class GameViewModel: ObservableObject {
             round = .flop
             for _ in 0..<3 { if let c = deck.draw() { community.append(c) } }
             appendLog("【翻牌】" + community.map { $0.id }.joined(separator: " "))
+            emitFX(text: "FLOP", colorHex: 0x32D74B, playerIdx: nil, big: true)
         case .flop:
             round = .turn
             if let c = deck.draw() { community.append(c) }
             appendLog("【转牌】" + community.last!.id)
+            emitFX(text: "TURN", colorHex: 0x32D74B, playerIdx: nil, big: true)
         case .turn:
             round = .river
             if let c = deck.draw() { community.append(c) }
             appendLog("【河牌】" + community.last!.id)
+            emitFX(text: "RIVER", colorHex: 0x32D74B, playerIdx: nil, big: true)
         case .river:
             round = .showdown
             doShowdown()
@@ -257,6 +309,9 @@ final class GameViewModel: ObservableObject {
         appendLog(settlementText)
         showSettlement = true
         revealAll = true
+        for w in winners {
+            emitFX(text: "WIN! +\(share)", colorHex: 0xFFD60A, playerIdx: w, big: true)
+        }
     }
 
     func continueNextHand() {
@@ -285,12 +340,9 @@ final class GameViewModel: ObservableObject {
         let strength = aiHandStrength(player: p)
         let r = Double.random(in: 0...1)
 
-        // 倒霉蛋强制跟注
         if p.forcedCall && toCall > 0 {
             performAction(idx: idx, action: .call); return
         }
-
-        // AI 偶尔放技能
         if maybeAICastSkill(idx: idx) { advanceTurn(); return }
 
         if toCall == 0 {
@@ -311,7 +363,6 @@ final class GameViewModel: ObservableObject {
         }
     }
 
-    /// 估算 AI 牌力（preflop 看高牌+对子；之后用真实评估）
     private func aiHandStrength(player p: Player) -> Double {
         if community.isEmpty {
             let ranks = p.holeCards.map { $0.rank.rawValue }
@@ -331,7 +382,6 @@ final class GameViewModel: ObservableObject {
         case .shield:
             applyShield(to: idx)
         case .peek:
-            // AI 偷看仅作 log
             let opponents = players.indices.filter { $0 != idx && !players[$0].isFolded }
             guard let target = opponents.randomElement() else { return false }
             if players[target].shielded {
@@ -360,13 +410,14 @@ final class GameViewModel: ObservableObject {
             appendLog("\(players[idx].name) 使用了【换牌术】")
         case .melon:
             guard let c = deck.draw() else { return false }
-            // 替换最差的一张
             let worstIdx = players[idx].holeCards.indices.min { players[idx].holeCards[$0].rank < players[idx].holeCards[$1].rank } ?? 0
             players[idx].holeCards[worstIdx] = c
             appendLog("\(players[idx].name) 使用了【吃瓜】")
         }
         markSkillCooldown(playerIdx: idx, kind: pick.kind)
-        return false  // 不消耗下注回合
+        emitFX(text: "【\(pick.kind.name)】", colorHex: 0xBF5AF2, playerIdx: idx, big: true)
+        screenShake += 1
+        return false
     }
 
     // MARK: - 玩家技能
@@ -417,6 +468,8 @@ final class GameViewModel: ObservableObject {
         }
         markSkillCooldown(playerIdx: me, kind: kind)
         appendLog("你 释放了【\(kind.name)】")
+        emitFX(text: "【\(kind.name)】", colorHex: 0xBF5AF2, playerIdx: me, big: true)
+        screenShake += 1
         pendingSkill = nil
     }
 
@@ -428,6 +481,18 @@ final class GameViewModel: ObservableObject {
     private func markSkillCooldown(playerIdx: Int, kind: SkillKind) {
         guard let si = players[playerIdx].skills.firstIndex(where: { $0.kind == kind }) else { return }
         players[playerIdx].skills[si].cooldownLeft = kind.cooldownTurns
+    }
+
+    // MARK: - 特效
+    func emitFX(text: String, colorHex: UInt32, playerIdx: Int?, big: Bool) {
+        let bubble = FXBubble(text: text, colorHex: colorHex, playerIdx: playerIdx, isBig: big)
+        fxBubbles.append(bubble)
+        Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 1_400_000_000)
+            await MainActor.run {
+                self?.fxBubbles.removeAll { $0.id == bubble.id }
+            }
+        }
     }
 
     // MARK: - 工具
