@@ -1,0 +1,262 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		06A29F00E43E9309FE82B18E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 540E8881AB2206E194653117 /* Assets.xcassets */; };
+		08203BD9551FF6556CD00230 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6DAD52D5C303D2BDC217855 /* CardView.swift */; };
+		0FF088F10D581C70256957C5 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17BE3F14EC2842DA9D6D4F6 /* Card.swift */; };
+		37F963D0AD7229923B181007 /* Deck.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5D19DCC24F66B81AB95544 /* Deck.swift */; };
+		4E95C46717C49962B3D0E532 /* Skill.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A91F968F37A04728783D91 /* Skill.swift */; };
+		718BE4831B8D5D27ED82208F /* PokerGameApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F05CFB0F28E2D1CC92A6103 /* PokerGameApp.swift */; };
+		71F43C2240C65A9DC7EAEA97 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB18DCA98A9CF038294551C /* Player.swift */; };
+		7D192D292F21C16626C510D8 /* ActionBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B11B8B43176EF9A5BEE5D51 /* ActionBarView.swift */; };
+		8753CBFFE8B4546DCB95FB94 /* SettlementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C44C7174D63566EF0C06FC /* SettlementView.swift */; };
+		9BD4302E2F4F0E85551FC2B7 /* HandEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B6BD1CFA14E3A8F1E07F7D8 /* HandEvaluator.swift */; };
+		B42771AB8A1A1CAD4438908C /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73429443C045C951D0AFFC00 /* PlayerView.swift */; };
+		C6EF77AA94C2BB73F439A582 /* SkillBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C75E2F18D6CACE647DC4ED8 /* SkillBarView.swift */; };
+		E1AF25DB14C655896DCA29F3 /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B7E8E0E1F83C2542ADB4706 /* GameViewModel.swift */; };
+		F1339C51318AFCC490B7DE3D /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC10971747D950277F29CBD6 /* GameView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		3AB18DCA98A9CF038294551C /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		4F05CFB0F28E2D1CC92A6103 /* PokerGameApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokerGameApp.swift; sourceTree = "<group>"; };
+		540E8881AB2206E194653117 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		6B11B8B43176EF9A5BEE5D51 /* ActionBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionBarView.swift; sourceTree = "<group>"; };
+		73429443C045C951D0AFFC00 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		7B7E8E0E1F83C2542ADB4706 /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
+		7C75E2F18D6CACE647DC4ED8 /* SkillBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillBarView.swift; sourceTree = "<group>"; };
+		819E8BBE4546761FBA87986D /* PokerGame.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PokerGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9B6BD1CFA14E3A8F1E07F7D8 /* HandEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandEvaluator.swift; sourceTree = "<group>"; };
+		A6DAD52D5C303D2BDC217855 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		A978367EE9ED09F7D87D4C17 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		AC10971747D950277F29CBD6 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
+		C17BE3F14EC2842DA9D6D4F6 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
+		C5C44C7174D63566EF0C06FC /* SettlementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementView.swift; sourceTree = "<group>"; };
+		DF5D19DCC24F66B81AB95544 /* Deck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deck.swift; sourceTree = "<group>"; };
+		E7A91F968F37A04728783D91 /* Skill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Skill.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		0A54CA878365A2FC7E346649 = {
+			isa = PBXGroup;
+			children = (
+				8580F555BC3EA342F7C6CCD9 /* PokerGame */,
+				D5A9DA377268B63052494C6E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8580F555BC3EA342F7C6CCD9 /* PokerGame */ = {
+			isa = PBXGroup;
+			children = (
+				540E8881AB2206E194653117 /* Assets.xcassets */,
+				A978367EE9ED09F7D87D4C17 /* Info.plist */,
+				4F05CFB0F28E2D1CC92A6103 /* PokerGameApp.swift */,
+				9FF7A1B21629E8389AE0AD58 /* Models */,
+				ED6E5651049BF1D1D11CF300 /* ViewModels */,
+				E07FC95AD2909A03384B8801 /* Views */,
+			);
+			path = PokerGame;
+			sourceTree = "<group>";
+		};
+		9FF7A1B21629E8389AE0AD58 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C17BE3F14EC2842DA9D6D4F6 /* Card.swift */,
+				DF5D19DCC24F66B81AB95544 /* Deck.swift */,
+				9B6BD1CFA14E3A8F1E07F7D8 /* HandEvaluator.swift */,
+				3AB18DCA98A9CF038294551C /* Player.swift */,
+				E7A91F968F37A04728783D91 /* Skill.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		D5A9DA377268B63052494C6E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				819E8BBE4546761FBA87986D /* PokerGame.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E07FC95AD2909A03384B8801 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				6B11B8B43176EF9A5BEE5D51 /* ActionBarView.swift */,
+				A6DAD52D5C303D2BDC217855 /* CardView.swift */,
+				AC10971747D950277F29CBD6 /* GameView.swift */,
+				73429443C045C951D0AFFC00 /* PlayerView.swift */,
+				C5C44C7174D63566EF0C06FC /* SettlementView.swift */,
+				7C75E2F18D6CACE647DC4ED8 /* SkillBarView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		ED6E5651049BF1D1D11CF300 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				7B7E8E0E1F83C2542ADB4706 /* GameViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		610B756DD0AD8C947DC3AABE /* PokerGame */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 147CEF03ECCEAC074849340C /* Build configuration list for PBXNativeTarget "PokerGame" */;
+			buildPhases = (
+				18C7238D962CB7D2AB101B11 /* Sources */,
+				A4544775EB16452A51726040 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PokerGame;
+			packageProductDependencies = (
+			);
+			productName = PokerGame;
+			productReference = 819E8BBE4546761FBA87986D /* PokerGame.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5C5210B99E7D282121106408 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = 8F9F9D13453AF68C2F069340 /* Build configuration list for PBXProject "PokerGame" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 0A54CA878365A2FC7E346649;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = D5A9DA377268B63052494C6E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				610B756DD0AD8C947DC3AABE /* PokerGame */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A4544775EB16452A51726040 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06A29F00E43E9309FE82B18E /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		18C7238D962CB7D2AB101B11 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D192D292F21C16626C510D8 /* ActionBarView.swift in Sources */,
+				0FF088F10D581C70256957C5 /* Card.swift in Sources */,
+				08203BD9551FF6556CD00230 /* CardView.swift in Sources */,
+				37F963D0AD7229923B181007 /* Deck.swift in Sources */,
+				F1339C51318AFCC490B7DE3D /* GameView.swift in Sources */,
+				E1AF25DB14C655896DCA29F3 /* GameViewModel.swift in Sources */,
+				9BD4302E2F4F0E85551FC2B7 /* HandEvaluator.swift in Sources */,
+				71F43C2240C65A9DC7EAEA97 /* Player.swift in Sources */,
+				B42771AB8A1A1CAD4438908C /* PlayerView.swift in Sources */,
+				718BE4831B8D5D27ED82208F /* PokerGameApp.swift in Sources */,
+				8753CBFFE8B4546DCB95FB94 /* SettlementView.swift in Sources */,
+				4E95C46717C49962B3D0E532 /* Skill.swift in Sources */,
+				C6EF77AA94C2BB73F439A582 /* SkillBarView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1FFFDF05AF5CE320DAA4EBA5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = PokerGame/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.PokerGame;
+				PRODUCT_NAME = PokerGame;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		68C60C52FDFACD9EC213F7AF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CURRENT_PROJECT_VERSION = 1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0.0;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		84C4401EDCAC4521AEAE3430 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = PokerGame/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.PokerGame;
+				PRODUCT_NAME = PokerGame;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		96A3DCB29498E9810DFA25AA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CURRENT_PROJECT_VERSION = 1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0.0;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		147CEF03ECCEAC074849340C /* Build configuration list for PBXNativeTarget "PokerGame" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				84C4401EDCAC4521AEAE3430 /* Debug */,
+				1FFFDF05AF5CE320DAA4EBA5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		8F9F9D13453AF68C2F069340 /* Build configuration list for PBXProject "PokerGame" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				68C60C52FDFACD9EC213F7AF /* Debug */,
+				96A3DCB29498E9810DFA25AA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 5C5210B99E7D282121106408 /* Project object */;
+}
