@@ -32,9 +32,11 @@ final class WalletStore: ObservableObject {
     static let bailoutAmount: Int = 1500
     static let bailoutThreshold: Int = entryFee  // < 500 触发补给
 
-    /// 第 N 次补给的冷却（秒）。第 1/2/3 次 4h，之后 24h。
+    /// 第 N 次补给的冷却（秒）。
+    /// ⚠️ 测试期：前 3 次 4 秒，之后 24 秒（便于回归补给流程）。
+    /// 发布正式版前改回：`count < 3 ? 4 * 3600 : 24 * 3600`
     static func bailoutCooldown(forCount count: Int) -> TimeInterval {
-        count < 3 ? 4 * 3600 : 24 * 3600
+        count < 3 ? 4 : 24
     }
 
     // MARK: - 操作

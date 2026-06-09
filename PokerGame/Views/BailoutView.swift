@@ -93,10 +93,11 @@ struct BailoutView: View {
 
     private var cooldownHint: String {
         let n = store.wallet.bailoutCount
+        // ⚠️ 测试期文案；发布正式版改回小时
         if n < 3 {
-            return "已补给 \(n) 次。前 3 次冷却为 4 小时，第 4 次起为 24 小时。"
+            return "已补给 \(n) 次。【测试模式】前 3 次冷却 4 秒，第 4 次起 24 秒。"
         } else {
-            return "已补给 \(n) 次。当前冷却为 24 小时。"
+            return "已补给 \(n) 次。【测试模式】当前冷却 24 秒。"
         }
     }
 
