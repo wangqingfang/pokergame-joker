@@ -1,0 +1,185 @@
+# Git 提交与 GitHub 协作知识库
+
+> 本仓库（pokergame-joker）的提交规范、工作流、分支保护、CI 速查表。
+> AI 助手在每次涉及提交 / push / PR 操作前，先读本文件再执行。
+
+---
+
+## 1. 仓库基本信息
+
+- 远端：`git@github.com:wangqingfang/pokergame-joker.git`（SSH，已配公钥）
+- 默认分支：`main`
+- 本地工作目录：`/Users/wangqingfang/ComateProjects/comate-zulu-demo-1780197165826/PokerGame`
+- Git 用户：`wangqingfang <973341596@qq.com>`
+
+---
+
+## 2. 日常提交工作流（强制走 PR）
+
+```bash
+# 1. 从最新 main 切分支
+git checkout main && git pull
+git checkout -b feat/xxx        # 前缀：feat / fix / chore / docs / refactor
+
+# 2. 改代码后 commit（commit message 见第 4 节）
+git add -A
+git commit -m "feat: 简短描述"
+
+# 3. 推到远端
+git push -u origin feat/xxx     # 第一次推分支用 -u；之后 git push 即可
+
+# 4. 创建 PR
+gh pr create --fill             # 或浏览器打开 GitHub 发 PR
+# PR 模板会自动填充（.github/pull_request_template.md）
+
+# 5. 等 CI 绿灯（iOS Build Check）
+
+# 6. 网页点 "Merge pull request"
+
+# 7. 删除已合入的本地分支
+git checkout main && git pull
+git branch -d feat/xxx
+```
+
+**禁止**：直接 `git push origin main`。被分支保护拦截会报 `GH006: Protected branch update failed`。
+
+---
+
+## 3. push 输出怎么看
+
+正常成功的 push 输出形如：
+
+```
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Writing objects: 100% (4/4), 2.88 KiB
+Total 4 (delta 1), reused 0
+remote: Resolving deltas: 100% (1/1)
+To github.com:wangqingfang/pokergame-joker.git
+   b0c3b68..893fd2a  main -> main
+```
+
+关键看最后两行：
+- `b0c3b68..893fd2a  main -> main` 表示远端 main 从 b0c3b68 推进到 893fd2a，**成功**
+- 看到 `[new branch]` 是首次推分支，也是成功
+- `[rejected]` / `non-fast-forward` / `Permission denied` / `Protected branch` 才是失败
+
+---
+
+## 4. Commit Message 规范（Conventional Commits）
+
+格式：`<type>: <subject>`，可选第二段正文说明 why。
+
+| type | 用途 |
+|---|---|
+| feat | 新功能 |
+| fix | 修 bug |
+| refactor | 重构（不改外部行为） |
+| perf | 性能优化 |
+| docs | 仅文档 |
+| style | 格式 / 空白 / 命名（不影响逻辑） |
+| test | 加 / 改测试 |
+| chore | 构建、依赖、配置 |
+| ci | CI 配置 |
+| build | 构建系统 / 工程文件 |
+
+**好例子：**
+
+```
+feat: 添加偷看技能目标选择交互
+fix: 结算时多人 all-in 的边池均分错误
+refactor: 抽离牌型评估到 HandEvaluator
+chore: 升级 XcodeGen 到 2.39
+ci: PR 时自动跑 iOS Simulator 编译
+```
+
+**坏例子**：`update`、`修改`、`fix bug`、`.` —— 一律 reject。
+
+中英文都可以，但**单条 commit 内统一**。subject 别超 70 字。
+
+---
+
+## 5. .gitignore 必须忽略
+
+```
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+.build/
+.swiftpm/
+Package.resolved
+.DS_Store
+*.log
+```
+
+如果不小心已经追踪了 `build/`，用 `git rm -r --cached build/` 反追踪后 commit。
+
+---
+
+## 6. 分支保护规则（GitHub 配置）
+
+`Settings → Branches → main`：
+
+- ✅ Require a pull request before merging（approvals: 0，个人项目避免死锁）
+- ✅ Require status checks to pass：`Build for iOS Simulator`
+- ✅ Require conversation resolution before merging
+- ✅ Block force pushes
+- ✅ Restrict deletions
+- ✅ Do not allow bypassing the above settings（admin 也走 PR）
+
+---
+
+## 7. CI 工作流（`.github/workflows/ios-build.yml`）
+
+每次 PR 和 push 到 main 时跑：
+
+1. checkout 代码
+2. 切到 Xcode
+3. brew 装 XcodeGen
+4. `xcodegen generate` 生成 .xcodeproj
+5. `xcodebuild build` 编译 iOS Simulator 版
+
+CI 失败 → PR 上会标红 → 不能 merge。看日志：https://github.com/wangqingfang/pokergame-joker/actions
+
+---
+
+## 8. 常用命令速查
+
+```bash
+git status                       # 看改了啥
+git log --oneline -10            # 最近 10 个 commit
+git diff                         # 未暂存的改动
+git diff --cached                # 已暂存的改动
+git restore <file>               # 丢弃工作区改动
+git restore --staged <file>      # 取消暂存
+git commit --amend               # 修上一个 commit（仅未 push 的）
+git stash / git stash pop        # 临时藏改动
+gh pr list                       # 看自己的 PR
+gh pr view --web                 # 浏览器打开当前分支的 PR
+gh pr checks                     # 看 PR 上的 CI 状态
+```
+
+---
+
+## 9. 常见问题排错
+
+| 现象 | 原因 | 处理 |
+|---|---|---|
+| `Permission denied (publickey)` | SSH key 没传 GitHub | `pbcopy < ~/.ssh/id_rsa.pub` → settings/ssh/new |
+| `could not read Username` | HTTPS 无凭证 | 切 SSH：`git remote set-url origin git@github.com:USER/REPO.git` |
+| `Protected branch update failed` | 在 main 直 push | 切分支发 PR |
+| `non-fast-forward` | 远端有新提交 | `git pull --rebase` 后再 push |
+| `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED` | GitHub 换了 host key | `ssh-keygen -R github.com` 后重连 |
+| CI 红，本地编译过 | runner 与本机 Xcode 版本不同 | 在 workflow 里固定 `xcode-select` 路径 |
+
+---
+
+## 10. AI 助手须遵守
+
+- **每次提交前先读本文件**（`gitpush.text`），确认本仓库流程
+- **不直接 push main**，永远走分支 + PR
+- commit message 必须按第 4 节格式
+- push 后用第 3 节标准判断成功 / 失败
+- 涉及凭证（SSH key、PAT、密码）一律让用户自己操作，不代输
+- 改动 `.github/`、`.gitignore`、`project.yml` 等基础设施文件时，commit type 用 `chore` 或 `ci`
