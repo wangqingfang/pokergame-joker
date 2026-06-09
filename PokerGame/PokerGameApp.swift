@@ -4,7 +4,7 @@ import SwiftUI
 struct PokerGameApp: App {
     var body: some Scene {
         WindowGroup {
-            GameView()
+            RootView()
                 .preferredColorScheme(.dark)
         }
     }

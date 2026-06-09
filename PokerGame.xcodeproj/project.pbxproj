@@ -10,7 +10,11 @@
 		06A29F00E43E9309FE82B18E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 540E8881AB2206E194653117 /* Assets.xcassets */; };
 		08203BD9551FF6556CD00230 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6DAD52D5C303D2BDC217855 /* CardView.swift */; };
 		0FF088F10D581C70256957C5 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17BE3F14EC2842DA9D6D4F6 /* Card.swift */; };
+		231D8E91CA833AA04D84D73C /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2636F9244299EE9278D60983 /* RootView.swift */; };
+		2552D43170F063C6E3006110 /* Wallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB4EEB0698C1291F486850E /* Wallet.swift */; };
 		37F963D0AD7229923B181007 /* Deck.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5D19DCC24F66B81AB95544 /* Deck.swift */; };
+		473FE463B71D8E1FD7CEED61 /* ShopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5BF803D97A735B16A83347 /* ShopView.swift */; };
+		4BCA9EC878DBC0FD18DEA3A5 /* BailoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98A84061155971346F693A87 /* BailoutView.swift */; };
 		4E95C46717C49962B3D0E532 /* Skill.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A91F968F37A04728783D91 /* Skill.swift */; };
 		718BE4831B8D5D27ED82208F /* PokerGameApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F05CFB0F28E2D1CC92A6103 /* PokerGameApp.swift */; };
 		71F43C2240C65A9DC7EAEA97 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB18DCA98A9CF038294551C /* Player.swift */; };
@@ -19,29 +23,37 @@
 		9BD4302E2F4F0E85551FC2B7 /* HandEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B6BD1CFA14E3A8F1E07F7D8 /* HandEvaluator.swift */; };
 		B42771AB8A1A1CAD4438908C /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73429443C045C951D0AFFC00 /* PlayerView.swift */; };
 		C6EF77AA94C2BB73F439A582 /* SkillBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C75E2F18D6CACE647DC4ED8 /* SkillBarView.swift */; };
+		C7737080217E244C48455926 /* ExtraSkill.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE02671CCFF688B1DE0F3B8 /* ExtraSkill.swift */; };
+		D8F9DF17C327C2ADF55B744C /* MainMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4E281550A0EE459ED583AB /* MainMenuView.swift */; };
 		DE17121ED3C4DE874CBD01A7 /* FXBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B23562C33515AE847396A59E /* FXBubbleView.swift */; };
 		E1AF25DB14C655896DCA29F3 /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B7E8E0E1F83C2542ADB4706 /* GameViewModel.swift */; };
 		F1339C51318AFCC490B7DE3D /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC10971747D950277F29CBD6 /* GameView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2636F9244299EE9278D60983 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		3AB18DCA98A9CF038294551C /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		4F05CFB0F28E2D1CC92A6103 /* PokerGameApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokerGameApp.swift; sourceTree = "<group>"; };
 		540E8881AB2206E194653117 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6B11B8B43176EF9A5BEE5D51 /* ActionBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionBarView.swift; sourceTree = "<group>"; };
+		6E4E281550A0EE459ED583AB /* MainMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuView.swift; sourceTree = "<group>"; };
 		73429443C045C951D0AFFC00 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		7B7E8E0E1F83C2542ADB4706 /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
 		7C75E2F18D6CACE647DC4ED8 /* SkillBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillBarView.swift; sourceTree = "<group>"; };
 		819E8BBE4546761FBA87986D /* PokerGame.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PokerGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		98A84061155971346F693A87 /* BailoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BailoutView.swift; sourceTree = "<group>"; };
 		9B6BD1CFA14E3A8F1E07F7D8 /* HandEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandEvaluator.swift; sourceTree = "<group>"; };
 		A6DAD52D5C303D2BDC217855 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		A978367EE9ED09F7D87D4C17 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		AC10971747D950277F29CBD6 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		B23562C33515AE847396A59E /* FXBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FXBubbleView.swift; sourceTree = "<group>"; };
+		BDE02671CCFF688B1DE0F3B8 /* ExtraSkill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtraSkill.swift; sourceTree = "<group>"; };
 		C17BE3F14EC2842DA9D6D4F6 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
 		C5C44C7174D63566EF0C06FC /* SettlementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementView.swift; sourceTree = "<group>"; };
+		DEB4EEB0698C1291F486850E /* Wallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wallet.swift; sourceTree = "<group>"; };
 		DF5D19DCC24F66B81AB95544 /* Deck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deck.swift; sourceTree = "<group>"; };
 		E7A91F968F37A04728783D91 /* Skill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Skill.swift; sourceTree = "<group>"; };
+		EE5BF803D97A735B16A83347 /* ShopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -71,9 +83,11 @@
 			children = (
 				C17BE3F14EC2842DA9D6D4F6 /* Card.swift */,
 				DF5D19DCC24F66B81AB95544 /* Deck.swift */,
+				BDE02671CCFF688B1DE0F3B8 /* ExtraSkill.swift */,
 				9B6BD1CFA14E3A8F1E07F7D8 /* HandEvaluator.swift */,
 				3AB18DCA98A9CF038294551C /* Player.swift */,
 				E7A91F968F37A04728783D91 /* Skill.swift */,
+				DEB4EEB0698C1291F486850E /* Wallet.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -90,11 +104,15 @@
 			isa = PBXGroup;
 			children = (
 				6B11B8B43176EF9A5BEE5D51 /* ActionBarView.swift */,
+				98A84061155971346F693A87 /* BailoutView.swift */,
 				A6DAD52D5C303D2BDC217855 /* CardView.swift */,
 				B23562C33515AE847396A59E /* FXBubbleView.swift */,
 				AC10971747D950277F29CBD6 /* GameView.swift */,
+				6E4E281550A0EE459ED583AB /* MainMenuView.swift */,
 				73429443C045C951D0AFFC00 /* PlayerView.swift */,
+				2636F9244299EE9278D60983 /* RootView.swift */,
 				C5C44C7174D63566EF0C06FC /* SettlementView.swift */,
+				EE5BF803D97A735B16A83347 /* ShopView.swift */,
 				7C75E2F18D6CACE647DC4ED8 /* SkillBarView.swift */,
 			);
 			path = Views;
@@ -172,19 +190,25 @@
 			buildActionMask = 2147483647;
 			files = (
 				7D192D292F21C16626C510D8 /* ActionBarView.swift in Sources */,
+				4BCA9EC878DBC0FD18DEA3A5 /* BailoutView.swift in Sources */,
 				0FF088F10D581C70256957C5 /* Card.swift in Sources */,
 				08203BD9551FF6556CD00230 /* CardView.swift in Sources */,
 				37F963D0AD7229923B181007 /* Deck.swift in Sources */,
+				C7737080217E244C48455926 /* ExtraSkill.swift in Sources */,
 				DE17121ED3C4DE874CBD01A7 /* FXBubbleView.swift in Sources */,
 				F1339C51318AFCC490B7DE3D /* GameView.swift in Sources */,
 				E1AF25DB14C655896DCA29F3 /* GameViewModel.swift in Sources */,
 				9BD4302E2F4F0E85551FC2B7 /* HandEvaluator.swift in Sources */,
+				D8F9DF17C327C2ADF55B744C /* MainMenuView.swift in Sources */,
 				71F43C2240C65A9DC7EAEA97 /* Player.swift in Sources */,
 				B42771AB8A1A1CAD4438908C /* PlayerView.swift in Sources */,
 				718BE4831B8D5D27ED82208F /* PokerGameApp.swift in Sources */,
+				231D8E91CA833AA04D84D73C /* RootView.swift in Sources */,
 				8753CBFFE8B4546DCB95FB94 /* SettlementView.swift in Sources */,
+				473FE463B71D8E1FD7CEED61 /* ShopView.swift in Sources */,
 				4E95C46717C49962B3D0E532 /* Skill.swift in Sources */,
 				C6EF77AA94C2BB73F439A582 /* SkillBarView.swift in Sources */,
+				2552D43170F063C6E3006110 /* Wallet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
