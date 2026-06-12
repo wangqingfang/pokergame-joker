@@ -14,6 +14,8 @@
 		2552D43170F063C6E3006110 /* Wallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB4EEB0698C1291F486850E /* Wallet.swift */; };
 		AA1100000000000000000001 /* SkillTreeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2200000000000000000001 /* SkillTreeStore.swift */; };
 		AA1100000000000000000002 /* MySkillsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2200000000000000000002 /* MySkillsView.swift */; };
+		BB1100000000000000000001 /* Loadout.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2200000000000000000001 /* Loadout.swift */; };
+		BB1100000000000000000002 /* LoadoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2200000000000000000002 /* LoadoutView.swift */; };
 		37F963D0AD7229923B181007 /* Deck.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5D19DCC24F66B81AB95544 /* Deck.swift */; };
 		473FE463B71D8E1FD7CEED61 /* SkillTreeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5BF803D97A735B16A83347 /* SkillTreeView.swift */; };
 		4BCA9EC878DBC0FD18DEA3A5 /* BailoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98A84061155971346F693A87 /* BailoutView.swift */; };
@@ -55,6 +57,8 @@
 		DEB4EEB0698C1291F486850E /* Wallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wallet.swift; sourceTree = "<group>"; };
 		AA2200000000000000000001 /* SkillTreeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillTreeStore.swift; sourceTree = "<group>"; };
 		AA2200000000000000000002 /* MySkillsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySkillsView.swift; sourceTree = "<group>"; };
+		BB2200000000000000000001 /* Loadout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loadout.swift; sourceTree = "<group>"; };
+		BB2200000000000000000002 /* LoadoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadoutView.swift; sourceTree = "<group>"; };
 		DF5D19DCC24F66B81AB95544 /* Deck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deck.swift; sourceTree = "<group>"; };
 		E7A91F968F37A04728783D91 /* Skill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Skill.swift; sourceTree = "<group>"; };
 		EE5BF803D97A735B16A83347 /* SkillTreeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillTreeView.swift; sourceTree = "<group>"; };
@@ -93,6 +97,7 @@
 				E7A91F968F37A04728783D91 /* Skill.swift */,
 				DEB4EEB0698C1291F486850E /* Wallet.swift */,
 				AA2200000000000000000001 /* SkillTreeStore.swift */,
+				BB2200000000000000000001 /* Loadout.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -119,6 +124,7 @@
 				C5C44C7174D63566EF0C06FC /* SettlementView.swift */,
 				EE5BF803D97A735B16A83347 /* SkillTreeView.swift */,
 				AA2200000000000000000002 /* MySkillsView.swift */,
+				BB2200000000000000000002 /* LoadoutView.swift */,
 				7C75E2F18D6CACE647DC4ED8 /* SkillBarView.swift */,
 			);
 			path = Views;
@@ -214,6 +220,8 @@
 				473FE463B71D8E1FD7CEED61 /* SkillTreeView.swift in Sources */,
 				AA1100000000000000000001 /* SkillTreeStore.swift in Sources */,
 				AA1100000000000000000002 /* MySkillsView.swift in Sources */,
+				BB1100000000000000000001 /* Loadout.swift in Sources */,
+				BB1100000000000000000002 /* LoadoutView.swift in Sources */,
 				4E95C46717C49962B3D0E532 /* Skill.swift in Sources */,
 				C6EF77AA94C2BB73F439A582 /* SkillBarView.swift in Sources */,
 				2552D43170F063C6E3006110 /* Wallet.swift in Sources */,

@@ -14,8 +14,8 @@ struct PlayerView: View {
                     .frame(width: 64, height: 64)
                     .clipShape(Circle())
                     .overlay(
-                        Circle().stroke(isActive ? Color.yellow : Color.white.opacity(0.4),
-                                        lineWidth: isActive ? 3 : 1)
+                        Circle().stroke(borderColor,
+                                        lineWidth: isActive ? 3 : (player.school != nil ? 2 : 1))
                     )
                 if player.shielded {
                     Image(systemName: "shield.lefthalf.filled")
@@ -58,9 +58,15 @@ struct PlayerView: View {
         .onTapGesture { onTap() }
     }
 
+    /// P3: 头像边框颜色——active 优先黄色，否则用 AI 流派色，最后回退到中性白色
+    private var borderColor: Color {
+        if isActive { return .yellow }
+        if let s = player.school { return s.color }
+        return .white.opacity(0.4)
+    }
+
     @ViewBuilder
-    private var avatar: some View {
-        if UIImage(named: player.avatarAssetName) != nil {
+    private var avatar: some View {        if UIImage(named: player.avatarAssetName) != nil {
             Image(player.avatarAssetName).resizable().scaledToFill()
         } else {
             ZStack {

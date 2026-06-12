@@ -57,6 +57,10 @@ struct Player: Identifiable {
     var skills: [SkillState] = SkillKind.allCases.map { SkillState(kind: $0) }
     /// P2: 已装载的扩展技能节点（来自技能树），与基础 6 技能并列
     var extraNodes: [ExtraNodeState] = []
+    /// P3: AI 流派人设（仅 AI 玩家有值）
+    var school: School? = nil
+    /// P3: AI 实际可用的基础技能子集（从 school.aiSkillPool 抽 2-3 个）
+    var aiSkillPool: [SkillKind] = []
     var shielded: Bool = false
     var forcedCall: Bool = false  // 倒霉蛋效果
     var revealedByPeek: Card?     // 玩家偷看到的对手牌

@@ -5,6 +5,7 @@ import SwiftUI
 struct RootView: View {
     @StateObject private var store = WalletStore()
     @StateObject private var tree = SkillTreeStore()
+    @StateObject private var loadouts = LoadoutStore()
     @State private var inGame: Bool = false
     @State private var gameVM: GameViewModel?
     /// 玩家进入对局时的开始时间（用于累计游戏时长）
@@ -19,6 +20,7 @@ struct RootView: View {
                 MainMenuView(onStart: startGame)
                     .environmentObject(store)
                     .environmentObject(tree)
+                    .environmentObject(loadouts)
                     .transition(.opacity)
             }
         }
@@ -27,9 +29,9 @@ struct RootView: View {
     }
 
     private func startGame() {
-        // 入场费已在 MainMenuView 中扣除
-        let nodes = tree.loadedNodes()
-        let vm = GameViewModel(loadedExtraNodes: nodes)
+        // 入场费已在 LoadoutView 的"开始游戏"按钮中扣除
+        let resolved = loadouts.resolveActive(ownedExtras: tree.loadedNodes())
+        let vm = GameViewModel(loadout: resolved)
         gameVM = vm
         matchStartedAt = Date()
         inGame = true
