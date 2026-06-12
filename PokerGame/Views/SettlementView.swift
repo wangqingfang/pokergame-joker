@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SettlementView: View {
     @ObservedObject var vm: GameViewModel
+    var onExit: () -> Void = {}
 
     var body: some View {
         VStack(spacing: 16) {
@@ -47,14 +48,13 @@ struct SettlementView: View {
             }
             .frame(maxHeight: 120)
 
-            // 改进点 5：游戏结束时只能选择重新开始
             HStack(spacing: 12) {
                 if vm.gameOver {
                     Button {
                         vm.showSettlement = false
-                        vm.newMatch()
+                        onExit()
                     } label: {
-                        Label("重新开始", systemImage: "arrow.clockwise")
+                        Label("回到主菜单", systemImage: "house.fill")
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 6)
                     }
@@ -73,9 +73,9 @@ struct SettlementView: View {
 
                     Button {
                         vm.showSettlement = false
-                        vm.newMatch()
+                        onExit()
                     } label: {
-                        Label("重置牌局", systemImage: "arrow.clockwise")
+                        Label("退出结算", systemImage: "rectangle.portrait.and.arrow.right")
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 6)
                     }

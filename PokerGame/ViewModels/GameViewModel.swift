@@ -22,7 +22,7 @@ final class GameViewModel: ObservableObject {
     // MARK: - Config
     let smallBlind = 10
     let bigBlind = 20
-    let startingChips = 1000
+    var startingChips: Int { WalletStore.entryChips }
 
     // MARK: - State
     @Published var players: [Player] = []
@@ -37,8 +37,11 @@ final class GameViewModel: ObservableObject {
     @Published var settlementText: String = ""
     @Published var revealAll: Bool = false
     @Published var pendingSkill: SkillKind?
+    @Published var pendingExtraSkill: ExtraSkillId?
     @Published var statusMessage: String = ""
     @Published var gameOver: Bool = false
+    /// P1: 玩家请求退出对局（结算钱包后由根视图返回主菜单）
+    @Published var exitRequested: Bool = false
 
     /// 屏幕飘字特效
     @Published var fxBubbles: [FXBubble] = []
@@ -47,9 +50,15 @@ final class GameViewModel: ObservableObject {
     /// 全局震动 / 闪光 trigger
     @Published var screenShake: Int = 0
 
+    /// P1: 玩家持有的扩展技能列表（开局从 WalletStore 注入）
+    private var ownedExtraSkillIds: [String] = []
+
     private var deck = Deck()
 
-    init() { newMatch() }
+    init(ownedExtraSkillIds: [String] = []) {
+        self.ownedExtraSkillIds = ownedExtraSkillIds
+        newMatch()
+    }
 
     // MARK: - 新对局
     func newMatch() {
@@ -63,9 +72,21 @@ final class GameViewModel: ObservableObject {
             Player(name: "搞怪精", kind: .ai, personality: .troll,
                    avatarAssetName: "AI3", chips: startingChips)
         ]
+        // 注入已购扩展技能（仅人类玩家）
+        let extras = ownedExtraSkillIds.compactMap { ExtraSkillId(rawValue: $0) }
+        players[0].extraSkills = extras.map { ExtraSkillState(kind: $0) }
         dealerIndex = 0
         gameOver = false
         startNewHand()
+    }
+
+    /// P1: 重新装载扩展技能（外部商店购买后调用）
+    func reloadExtraSkills(_ ids: [String]) {
+        ownedExtraSkillIds = ids
+        let extras = ids.compactMap { ExtraSkillId(rawValue: $0) }
+        if !players.isEmpty {
+            players[0].extraSkills = extras.map { ExtraSkillState(kind: $0) }
+        }
     }
 
     // MARK: - 新一手牌
@@ -102,6 +123,9 @@ final class GameViewModel: ObservableObject {
             // 改进点 4：每轮开始所有技能立即可用
             for j in players[i].skills.indices {
                 players[i].skills[j].cooldownLeft = 0
+            }
+            for j in players[i].extraSkills.indices {
+                players[i].extraSkills[j].cooldownLeft = 0
             }
         }
 
@@ -482,6 +506,79 @@ final class GameViewModel: ObservableObject {
         guard let si = players[playerIdx].skills.firstIndex(where: { $0.kind == kind }) else { return }
         players[playerIdx].skills[si].cooldownLeft = kind.cooldownTurns
     }
+
+    // MARK: - P1 扩展技能（玩家）
+    /// 玩家释放扩展技能；底层效果复用 SkillKind 实现，但走独立的冷却槽。
+    func playerCastExtraSkill(_ id: ExtraSkillId, target: Int? = nil, ownCardIndex: Int? = nil) {
+        let me = 0
+        guard let si = players[me].extraSkills.firstIndex(where: { $0.kind == id }) else { return }
+        guard players[me].extraSkills[si].ready else {
+            statusMessage = "技能冷却中"; return
+        }
+        let backed = id.backedBy
+        switch backed {
+        case .shield:
+            applyShield(to: me)
+        case .peek:
+            guard let t = target, !players[t].isFolded else {
+                statusMessage = "请选择有效的对手"; return
+            }
+            if players[t].shielded {
+                players[t].shielded = false
+                statusMessage = "被对方护盾挡住了"
+            } else {
+                let c = players[t].holeCards.randomElement()
+                players[me].revealedByPeek = c
+                statusMessage = "你偷看到 \(players[t].name) 的底牌：\(c?.id ?? "?")"
+            }
+        case .unlucky:
+            guard let t = target, !players[t].isFolded else {
+                statusMessage = "请选择对手"; return
+            }
+            if players[t].shielded { players[t].shielded = false; statusMessage = "被护盾抵消" }
+            else { players[t].forcedCall = true; statusMessage = "\(players[t].name) 下一轮必须跟注" }
+        case .chaos:
+            guard !community.isEmpty else {
+                statusMessage = "需要先翻出公共牌"; return
+            }
+            let ci = Int.random(in: 0..<community.count)
+            if let c = deck.draw() { community[ci] = c; statusMessage = "公共牌已被搅乱" }
+        case .swap, .melon:
+            // 当前 4 个 P1 扩展技能不会映射到这两类
+            return
+        }
+        players[me].extraSkills[si].cooldownLeft = id.cooldownTurns
+        appendLog("你 释放了【\(id.name)】(\(id.schoolLabel))")
+        emitFX(text: "【\(id.name)】", colorHex: extraSkillFXColor(id), playerIdx: me, big: true)
+        screenShake += 1
+        pendingExtraSkill = nil
+    }
+
+    private func extraSkillFXColor(_ id: ExtraSkillId) -> UInt32 {
+        switch id {
+        case .bruteFist: return 0xFF453A
+        case .mageMist: return 0x0A84FF
+        case .guardianHeal: return 0x32D74B
+        case .tricksterMark: return 0xBF5AF2
+        }
+    }
+
+    /// 是否有任意扩展技能需要选择目标
+    func extraSkillNeedsTarget(_ id: ExtraSkillId) -> Bool {
+        switch id.backedBy {
+        case .peek, .unlucky: return true
+        default: return false
+        }
+    }
+
+    // MARK: - P1 退出对局
+    func requestExit() {
+        // 统一标记，由根视图监听后做钱包结算并切回主菜单
+        exitRequested = true
+    }
+
+    /// 提供给根视图：玩家剩余筹码（结束/退出时用于兑换回钱包）
+    var humanRemainingChips: Int { players.first?.chips ?? 0 }
 
     // MARK: - 特效
     func emitFX(text: String, colorHex: UInt32, playerIdx: Int?, big: Bool) {

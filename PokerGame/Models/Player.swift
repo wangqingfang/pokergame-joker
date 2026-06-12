@@ -55,7 +55,17 @@ struct Player: Identifiable {
     var currentBet: Int = 0       // 本轮已下注
     var lastAction: LastAction = .none
     var skills: [SkillState] = SkillKind.allCases.map { SkillState(kind: $0) }
+    /// P1: 已装载的扩展技能（来自商店），共享冷却列表与基础技能并行
+    var extraSkills: [ExtraSkillState] = []
     var shielded: Bool = false
     var forcedCall: Bool = false  // 倒霉蛋效果
     var revealedByPeek: Card?     // 玩家偷看到的对手牌
+}
+
+/// 扩展技能在牌局内的运行时状态
+struct ExtraSkillState: Identifiable {
+    let kind: ExtraSkillId
+    var cooldownLeft: Int = 0
+    var id: String { kind.rawValue }
+    var ready: Bool { cooldownLeft <= 0 }
 }
