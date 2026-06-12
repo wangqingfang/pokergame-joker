@@ -16,15 +16,15 @@ struct SkillBarView: View {
                     .disabled(!s.ready || !vm.humanIsActive)
                 }
 
-                if !me.extraSkills.isEmpty {
+                if !me.extraNodes.isEmpty {
                     Divider().frame(height: 36).background(Color.white.opacity(0.3))
                 }
 
-                ForEach(me.extraSkills) { es in
+                ForEach(me.extraNodes) { es in
                     Button {
-                        handleExtraTap(es.kind)
+                        handleExtraTap(es)
                     } label: {
-                        extraSkillCell(es)
+                        extraNodeCell(es)
                     }
                     .disabled(!es.ready || !vm.humanIsActive)
                 }
@@ -58,37 +58,38 @@ struct SkillBarView: View {
         )
     }
 
-    private func extraSkillCell(_ es: ExtraSkillState) -> some View {
+    private func extraNodeCell(_ es: ExtraNodeState) -> some View {
         VStack(spacing: 2) {
-            Image(systemName: es.kind.systemIcon)
+            Image(systemName: es.node.systemIcon)
                 .font(.title3)
                 .foregroundColor(es.ready ? .white : .gray)
-            Text(es.kind.name)
+            Text(es.node.name)
                 .font(.caption2)
                 .foregroundColor(.white)
+                .lineLimit(1)
             if !es.ready {
                 Text("CD\(es.cooldownLeft)")
                     .font(.system(size: 9))
                     .foregroundColor(.orange)
             } else {
-                Text(es.kind.schoolLabel)
+                Text("\(Int(es.node.successRate * 100))%")
                     .font(.system(size: 9, weight: .bold))
-                    .foregroundColor(es.kind.schoolColor)
+                    .foregroundColor(es.node.school.color)
             }
         }
-        .frame(width: 56, height: 64)
+        .frame(width: 60, height: 64)
         .background(
             RoundedRectangle(cornerRadius: 10)
                 .fill(es.ready
-                      ? LinearGradient(colors: [es.kind.schoolColor.opacity(0.85),
-                                                es.kind.schoolColor.opacity(0.5)],
+                      ? LinearGradient(colors: [es.node.school.color.opacity(0.85),
+                                                es.node.school.color.opacity(0.5)],
                                        startPoint: .topLeading, endPoint: .bottomTrailing)
                       : LinearGradient(colors: [Color.gray.opacity(0.4)],
                                        startPoint: .top, endPoint: .bottom))
         )
         .overlay(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(vm.pendingExtraSkill == es.kind ? Color.yellow : .clear, lineWidth: 2)
+                .stroke(vm.pendingExtraNodeId == es.id ? Color.yellow : .clear, lineWidth: 2)
         )
     }
 
@@ -100,18 +101,18 @@ struct SkillBarView: View {
             vm.playerCastSkill(.swap, ownCardIndex: 0)
         case .peek, .unlucky:
             vm.pendingSkill = s.kind
-            vm.pendingExtraSkill = nil
+            vm.pendingExtraNodeId = nil
             vm.statusMessage = "请点击一个 AI 头像作为目标"
         }
     }
 
-    private func handleExtraTap(_ id: ExtraSkillId) {
-        if vm.extraSkillNeedsTarget(id) {
-            vm.pendingExtraSkill = id
+    private func handleExtraTap(_ es: ExtraNodeState) {
+        if vm.extraNodeNeedsTarget(es.id) {
+            vm.pendingExtraNodeId = es.id
             vm.pendingSkill = nil
-            vm.statusMessage = "请点击一个 AI 头像作为【\(id.name)】的目标"
+            vm.statusMessage = "请点击一个 AI 头像作为【\(es.node.name)】的目标"
         } else {
-            vm.playerCastExtraSkill(id)
+            vm.playerCastExtraNode(es.id)
         }
     }
 }

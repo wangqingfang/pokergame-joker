@@ -7,7 +7,6 @@ struct Wallet: Codable {
     var totalPlayMinutes: Int = 0
     var lastBailoutAt: Date? = nil
     var bailoutCount: Int = 0
-    var ownedExtraSkillIds: [String] = []
 }
 
 @MainActor
@@ -61,11 +60,12 @@ final class WalletStore: ObservableObject {
         persist()
     }
 
-    func purchaseExtraSkill(_ id: String, price: Int) -> Bool {
-        guard wallet.coins >= price else { return false }
-        guard !wallet.ownedExtraSkillIds.contains(id) else { return false }
-        wallet.coins -= price
-        wallet.ownedExtraSkillIds.append(id)
+    /// P2: 通用扣金币（被技能树购买/升级共用）
+    @discardableResult
+    func spendCoins(_ amount: Int) -> Bool {
+        guard amount >= 0 else { return false }
+        guard wallet.coins >= amount else { return false }
+        wallet.coins -= amount
         persist()
         return true
     }
