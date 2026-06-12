@@ -50,46 +50,53 @@ final class GameViewModel: ObservableObject {
     /// 全局震动 / 闪光 trigger
     @Published var screenShake: Int = 0
 
-    /// P2: 玩家持有的扩展技能节点列表（开局从 SkillTreeStore 注入）
-    private var loadedExtraNodes: [LoadedNode] = []
+    /// P3: 玩家本局装载（基础技能子集 + 扩展节点）
+    private var loadout: ResolvedLoadout = ResolvedLoadout(name: "默认", entries: [])
 
     private var deck = Deck()
 
-    init(loadedExtraNodes: [LoadedNode] = []) {
-        self.loadedExtraNodes = loadedExtraNodes
+    init(loadout: ResolvedLoadout = ResolvedLoadout(name: "默认", entries: [])) {
+        self.loadout = loadout
         newMatch()
     }
 
     // MARK: - 新对局
     func newMatch() {
-        players = [
-            Player(name: "你", kind: .human, personality: nil,
-                   avatarAssetName: "PlayerAvatar", chips: startingChips),
-            Player(name: "激进鬼", kind: .ai, personality: .aggressive,
-                   avatarAssetName: "AI1", chips: startingChips),
-            Player(name: "保守怪", kind: .ai, personality: .conservative,
-                   avatarAssetName: "AI2", chips: startingChips),
-            Player(name: "搞怪精", kind: .ai, personality: .troll,
-                   avatarAssetName: "AI3", chips: startingChips)
-        ]
-        // 注入已购扩展技能节点（仅人类玩家）
-        players[0].extraNodes = loadedExtraNodes.map { ExtraNodeState(node: $0) }
+        // P3: AI 角色绑定流派
+        let aiSchools: [School] = [.brute, .mage, .guardian]
+        var ais: [Player] = []
+        let names = ["AI · 暴力", "AI · 智谋", "AI · 守护"]
+        let assets = ["AI1", "AI2", "AI3"]
+        let personas: [AIPersonality] = [.aggressive, .conservative, .troll]
+        for i in 0..<3 {
+            var p = Player(name: names[i], kind: .ai, personality: personas[i],
+                           avatarAssetName: assets[i], chips: startingChips)
+            let school = aiSchools[i]
+            p.school = school
+            // 从流派技能池里随机抽 2-3 个作为本局 AI 实际使用的技能
+            let pool = school.aiSkillPool.shuffled()
+            let count = Int.random(in: 2...min(3, pool.count))
+            p.aiSkillPool = Array(pool.prefix(count))
+            ais.append(p)
+        }
+        players = [Player(name: "你", kind: .human, personality: nil,
+                          avatarAssetName: "PlayerAvatar", chips: startingChips)] + ais
+
+        // P3: 玩家技能槽根据 loadout 过滤
+        let allowedBase = Set(loadout.baseKinds)
+        players[0].skills = SkillKind.allCases
+            .filter { allowedBase.contains($0) }
+            .map { SkillState(kind: $0) }
+        players[0].extraNodes = loadout.extras.map { ExtraNodeState(node: $0) }
+
         dealerIndex = 0
         gameOver = false
         startNewHand()
     }
 
-    /// P2: 重新装载扩展技能节点（外部技能树购买/升级后调用）
-    func reloadExtraNodes(_ nodes: [LoadedNode]) {
-        loadedExtraNodes = nodes
-        if !players.isEmpty {
-            // 保留同 id 的剩余冷却
-            let oldCD: [String: Int] = Dictionary(uniqueKeysWithValues:
-                players[0].extraNodes.map { ($0.id, $0.cooldownLeft) })
-            players[0].extraNodes = nodes.map {
-                ExtraNodeState(node: $0, cooldownLeft: oldCD[$0.id] ?? 0)
-            }
-        }
+    /// P3: 重新装载玩家出战配置（外部调用，目前未使用，留作后续扩展）
+    func reloadLoadout(_ newLoadout: ResolvedLoadout) {
+        self.loadout = newLoadout
     }
 
     // MARK: - 新一手牌
@@ -403,7 +410,11 @@ final class GameViewModel: ObservableObject {
 
     private func maybeAICastSkill(idx: Int) -> Bool {
         guard Double.random(in: 0...1) < 0.15 else { return false }
-        let ready = players[idx].skills.filter { $0.ready }
+        // P3: AI 仅从流派技能池中选
+        let pool = players[idx].aiSkillPool.isEmpty
+            ? SkillKind.allCases
+            : players[idx].aiSkillPool
+        let ready = players[idx].skills.filter { $0.ready && pool.contains($0.kind) }
         guard let pick = ready.randomElement() else { return false }
         switch pick.kind {
         case .shield:
@@ -442,7 +453,12 @@ final class GameViewModel: ObservableObject {
             appendLog("\(players[idx].name) 使用了【吃瓜】")
         }
         markSkillCooldown(playerIdx: idx, kind: pick.kind)
-        emitFX(text: "【\(pick.kind.name)】", colorHex: 0xBF5AF2, playerIdx: idx, big: true)
+        let school = players[idx].school
+        let color = school?.fxColorHex ?? 0xBF5AF2
+        emitFX(text: "【\(pick.kind.name)】", colorHex: color, playerIdx: idx, big: true)
+        if let s = school {
+            appendLog("\(players[idx].name)：\(s.aiTaunt)")
+        }
         screenShake += 1
         return false
     }

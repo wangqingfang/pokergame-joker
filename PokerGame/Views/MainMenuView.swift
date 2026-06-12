@@ -3,10 +3,12 @@ import SwiftUI
 struct MainMenuView: View {
     @EnvironmentObject var store: WalletStore
     @EnvironmentObject var tree: SkillTreeStore
+    @EnvironmentObject var loadouts: LoadoutStore
     @State private var showSkillTree = false
     @State private var showMySkills = false
     @State private var showBailout = false
-    /// 通过外部回调触发"开始一局"，由 RootView 决定是否进入 GameView
+    @State private var showLoadout = false
+    /// "出战配置"页里点了"开始游戏"后通过此回调通知 RootView 切到牌桌
     var onStart: () -> Void
 
     var body: some View {
@@ -44,6 +46,12 @@ struct MainMenuView: View {
                 Spacer()
             }
         }
+        .sheet(isPresented: $showLoadout) {
+            LoadoutView(onStart: { onStart() })
+                .environmentObject(store)
+                .environmentObject(tree)
+                .environmentObject(loadouts)
+        }
         .sheet(isPresented: $showSkillTree) {
             SkillTreeView()
                 .environmentObject(store)
@@ -64,8 +72,8 @@ struct MainMenuView: View {
             tappedStart()
         } label: {
             HStack {
-                Image(systemName: "play.circle.fill")
-                Text("开始一局（入场 \(WalletStore.entryFee)）")
+                Image(systemName: "rectangle.3.group.fill")
+                Text("出战配置 → 入场 \(WalletStore.entryFee)")
                     .font(.headline)
             }
             .frame(maxWidth: .infinity)
@@ -99,8 +107,8 @@ struct MainMenuView: View {
 
     private func tappedStart() {
         if store.canStartMatch() {
-            store.payEntry()
-            onStart()
+            // P3: 进入出战配置页（在那里点"开始游戏"才扣入场费）
+            showLoadout = true
         } else {
             showBailout = true
         }
