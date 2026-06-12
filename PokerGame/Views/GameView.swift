@@ -174,8 +174,8 @@ struct GameView: View {
             vm.playerCastSkill(pending, target: idx)
             return
         }
-        if let pendingExtra = vm.pendingExtraSkill {
-            vm.playerCastExtraSkill(pendingExtra, target: idx)
+        if let pendingExtra = vm.pendingExtraNodeId {
+            vm.playerCastExtraNode(pendingExtra, target: idx)
             return
         }
     }

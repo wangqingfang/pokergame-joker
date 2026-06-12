@@ -4,6 +4,7 @@ import SwiftUI
 /// 入场费扣除、剩余筹码兑换钱包都在这里完成，避免 GameViewModel 直接依赖钱包逻辑。
 struct RootView: View {
     @StateObject private var store = WalletStore()
+    @StateObject private var tree = SkillTreeStore()
     @State private var inGame: Bool = false
     @State private var gameVM: GameViewModel?
     /// 玩家进入对局时的开始时间（用于累计游戏时长）
@@ -17,6 +18,7 @@ struct RootView: View {
             } else {
                 MainMenuView(onStart: startGame)
                     .environmentObject(store)
+                    .environmentObject(tree)
                     .transition(.opacity)
             }
         }
@@ -26,7 +28,8 @@ struct RootView: View {
 
     private func startGame() {
         // 入场费已在 MainMenuView 中扣除
-        let vm = GameViewModel(ownedExtraSkillIds: store.wallet.ownedExtraSkillIds)
+        let nodes = tree.loadedNodes()
+        let vm = GameViewModel(loadedExtraNodes: nodes)
         gameVM = vm
         matchStartedAt = Date()
         inGame = true

@@ -12,8 +12,10 @@
 		0FF088F10D581C70256957C5 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17BE3F14EC2842DA9D6D4F6 /* Card.swift */; };
 		231D8E91CA833AA04D84D73C /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2636F9244299EE9278D60983 /* RootView.swift */; };
 		2552D43170F063C6E3006110 /* Wallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB4EEB0698C1291F486850E /* Wallet.swift */; };
+		AA1100000000000000000001 /* SkillTreeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2200000000000000000001 /* SkillTreeStore.swift */; };
+		AA1100000000000000000002 /* MySkillsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2200000000000000000002 /* MySkillsView.swift */; };
 		37F963D0AD7229923B181007 /* Deck.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5D19DCC24F66B81AB95544 /* Deck.swift */; };
-		473FE463B71D8E1FD7CEED61 /* ShopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5BF803D97A735B16A83347 /* ShopView.swift */; };
+		473FE463B71D8E1FD7CEED61 /* SkillTreeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5BF803D97A735B16A83347 /* SkillTreeView.swift */; };
 		4BCA9EC878DBC0FD18DEA3A5 /* BailoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98A84061155971346F693A87 /* BailoutView.swift */; };
 		4E95C46717C49962B3D0E532 /* Skill.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A91F968F37A04728783D91 /* Skill.swift */; };
 		718BE4831B8D5D27ED82208F /* PokerGameApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F05CFB0F28E2D1CC92A6103 /* PokerGameApp.swift */; };
@@ -23,7 +25,7 @@
 		9BD4302E2F4F0E85551FC2B7 /* HandEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B6BD1CFA14E3A8F1E07F7D8 /* HandEvaluator.swift */; };
 		B42771AB8A1A1CAD4438908C /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73429443C045C951D0AFFC00 /* PlayerView.swift */; };
 		C6EF77AA94C2BB73F439A582 /* SkillBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C75E2F18D6CACE647DC4ED8 /* SkillBarView.swift */; };
-		C7737080217E244C48455926 /* ExtraSkill.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE02671CCFF688B1DE0F3B8 /* ExtraSkill.swift */; };
+		C7737080217E244C48455926 /* SkillNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE02671CCFF688B1DE0F3B8 /* SkillNode.swift */; };
 		D8F9DF17C327C2ADF55B744C /* MainMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4E281550A0EE459ED583AB /* MainMenuView.swift */; };
 		DE17121ED3C4DE874CBD01A7 /* FXBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B23562C33515AE847396A59E /* FXBubbleView.swift */; };
 		E1AF25DB14C655896DCA29F3 /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B7E8E0E1F83C2542ADB4706 /* GameViewModel.swift */; };
@@ -47,13 +49,15 @@
 		A978367EE9ED09F7D87D4C17 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		AC10971747D950277F29CBD6 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		B23562C33515AE847396A59E /* FXBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FXBubbleView.swift; sourceTree = "<group>"; };
-		BDE02671CCFF688B1DE0F3B8 /* ExtraSkill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtraSkill.swift; sourceTree = "<group>"; };
+		BDE02671CCFF688B1DE0F3B8 /* SkillNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillNode.swift; sourceTree = "<group>"; };
 		C17BE3F14EC2842DA9D6D4F6 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
 		C5C44C7174D63566EF0C06FC /* SettlementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementView.swift; sourceTree = "<group>"; };
 		DEB4EEB0698C1291F486850E /* Wallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wallet.swift; sourceTree = "<group>"; };
+		AA2200000000000000000001 /* SkillTreeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillTreeStore.swift; sourceTree = "<group>"; };
+		AA2200000000000000000002 /* MySkillsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySkillsView.swift; sourceTree = "<group>"; };
 		DF5D19DCC24F66B81AB95544 /* Deck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deck.swift; sourceTree = "<group>"; };
 		E7A91F968F37A04728783D91 /* Skill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Skill.swift; sourceTree = "<group>"; };
-		EE5BF803D97A735B16A83347 /* ShopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopView.swift; sourceTree = "<group>"; };
+		EE5BF803D97A735B16A83347 /* SkillTreeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillTreeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -88,6 +92,7 @@
 				3AB18DCA98A9CF038294551C /* Player.swift */,
 				E7A91F968F37A04728783D91 /* Skill.swift */,
 				DEB4EEB0698C1291F486850E /* Wallet.swift */,
+				AA2200000000000000000001 /* SkillTreeStore.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -112,7 +117,8 @@
 				73429443C045C951D0AFFC00 /* PlayerView.swift */,
 				2636F9244299EE9278D60983 /* RootView.swift */,
 				C5C44C7174D63566EF0C06FC /* SettlementView.swift */,
-				EE5BF803D97A735B16A83347 /* ShopView.swift */,
+				EE5BF803D97A735B16A83347 /* SkillTreeView.swift */,
+				AA2200000000000000000002 /* MySkillsView.swift */,
 				7C75E2F18D6CACE647DC4ED8 /* SkillBarView.swift */,
 			);
 			path = Views;
@@ -205,7 +211,9 @@
 				718BE4831B8D5D27ED82208F /* PokerGameApp.swift in Sources */,
 				231D8E91CA833AA04D84D73C /* RootView.swift in Sources */,
 				8753CBFFE8B4546DCB95FB94 /* SettlementView.swift in Sources */,
-				473FE463B71D8E1FD7CEED61 /* ShopView.swift in Sources */,
+				473FE463B71D8E1FD7CEED61 /* SkillTreeView.swift in Sources */,
+				AA1100000000000000000001 /* SkillTreeStore.swift in Sources */,
+				AA1100000000000000000002 /* MySkillsView.swift in Sources */,
 				4E95C46717C49962B3D0E532 /* Skill.swift in Sources */,
 				C6EF77AA94C2BB73F439A582 /* SkillBarView.swift in Sources */,
 				2552D43170F063C6E3006110 /* Wallet.swift in Sources */,

@@ -37,7 +37,7 @@ final class GameViewModel: ObservableObject {
     @Published var settlementText: String = ""
     @Published var revealAll: Bool = false
     @Published var pendingSkill: SkillKind?
-    @Published var pendingExtraSkill: ExtraSkillId?
+    @Published var pendingExtraNodeId: String?
     @Published var statusMessage: String = ""
     @Published var gameOver: Bool = false
     /// P1: 玩家请求退出对局（结算钱包后由根视图返回主菜单）
@@ -50,13 +50,13 @@ final class GameViewModel: ObservableObject {
     /// 全局震动 / 闪光 trigger
     @Published var screenShake: Int = 0
 
-    /// P1: 玩家持有的扩展技能列表（开局从 WalletStore 注入）
-    private var ownedExtraSkillIds: [String] = []
+    /// P2: 玩家持有的扩展技能节点列表（开局从 SkillTreeStore 注入）
+    private var loadedExtraNodes: [LoadedNode] = []
 
     private var deck = Deck()
 
-    init(ownedExtraSkillIds: [String] = []) {
-        self.ownedExtraSkillIds = ownedExtraSkillIds
+    init(loadedExtraNodes: [LoadedNode] = []) {
+        self.loadedExtraNodes = loadedExtraNodes
         newMatch()
     }
 
@@ -72,20 +72,23 @@ final class GameViewModel: ObservableObject {
             Player(name: "搞怪精", kind: .ai, personality: .troll,
                    avatarAssetName: "AI3", chips: startingChips)
         ]
-        // 注入已购扩展技能（仅人类玩家）
-        let extras = ownedExtraSkillIds.compactMap { ExtraSkillId(rawValue: $0) }
-        players[0].extraSkills = extras.map { ExtraSkillState(kind: $0) }
+        // 注入已购扩展技能节点（仅人类玩家）
+        players[0].extraNodes = loadedExtraNodes.map { ExtraNodeState(node: $0) }
         dealerIndex = 0
         gameOver = false
         startNewHand()
     }
 
-    /// P1: 重新装载扩展技能（外部商店购买后调用）
-    func reloadExtraSkills(_ ids: [String]) {
-        ownedExtraSkillIds = ids
-        let extras = ids.compactMap { ExtraSkillId(rawValue: $0) }
+    /// P2: 重新装载扩展技能节点（外部技能树购买/升级后调用）
+    func reloadExtraNodes(_ nodes: [LoadedNode]) {
+        loadedExtraNodes = nodes
         if !players.isEmpty {
-            players[0].extraSkills = extras.map { ExtraSkillState(kind: $0) }
+            // 保留同 id 的剩余冷却
+            let oldCD: [String: Int] = Dictionary(uniqueKeysWithValues:
+                players[0].extraNodes.map { ($0.id, $0.cooldownLeft) })
+            players[0].extraNodes = nodes.map {
+                ExtraNodeState(node: $0, cooldownLeft: oldCD[$0.id] ?? 0)
+            }
         }
     }
 
@@ -124,8 +127,8 @@ final class GameViewModel: ObservableObject {
             for j in players[i].skills.indices {
                 players[i].skills[j].cooldownLeft = 0
             }
-            for j in players[i].extraSkills.indices {
-                players[i].extraSkills[j].cooldownLeft = 0
+            for j in players[i].extraNodes.indices {
+                players[i].extraNodes[j].cooldownLeft = 0
             }
         }
 
@@ -507,16 +510,31 @@ final class GameViewModel: ObservableObject {
         players[playerIdx].skills[si].cooldownLeft = kind.cooldownTurns
     }
 
-    // MARK: - P1 扩展技能（玩家）
-    /// 玩家释放扩展技能；底层效果复用 SkillKind 实现，但走独立的冷却槽。
-    func playerCastExtraSkill(_ id: ExtraSkillId, target: Int? = nil, ownCardIndex: Int? = nil) {
+    // MARK: - P2 扩展技能（玩家，按节点 id 释放）
+    /// 玩家释放扩展技能节点；走成功率判定 + 独立冷却。
+    func playerCastExtraNode(_ nodeId: String, target: Int? = nil, ownCardIndex: Int? = nil) {
         let me = 0
-        guard let si = players[me].extraSkills.firstIndex(where: { $0.kind == id }) else { return }
-        guard players[me].extraSkills[si].ready else {
+        guard let si = players[me].extraNodes.firstIndex(where: { $0.id == nodeId }) else { return }
+        guard players[me].extraNodes[si].ready else {
             statusMessage = "技能冷却中"; return
         }
-        let backed = id.backedBy
-        switch backed {
+        let runtime = players[me].extraNodes[si].node
+
+        // 先做成功率判定（PRD-P2 §6：失败也消耗冷却，不退资源）
+        let roll = Double.random(in: 0..<1)
+        let hit = roll < runtime.successRate
+
+        if !hit {
+            players[me].extraNodes[si].cooldownLeft = runtime.cooldownTurns
+            appendLog("你 释放【\(runtime.name)】翻车（成功率 \(Int(runtime.successRate * 100))%）")
+            emitFX(text: "💥 翻车", colorHex: 0x8E8E93, playerIdx: me, big: true)
+            statusMessage = "翻车了！技能未生效但仍进入冷却"
+            pendingExtraNodeId = nil
+            return
+        }
+
+        // 命中：执行底层效果
+        switch runtime.effect {
         case .shield:
             applyShield(to: me)
         case .peek:
@@ -531,42 +549,46 @@ final class GameViewModel: ObservableObject {
                 players[me].revealedByPeek = c
                 statusMessage = "你偷看到 \(players[t].name) 的底牌：\(c?.id ?? "?")"
             }
-        case .unlucky:
+        case .forceCall:
             guard let t = target, !players[t].isFolded else {
                 statusMessage = "请选择对手"; return
             }
             if players[t].shielded { players[t].shielded = false; statusMessage = "被护盾抵消" }
             else { players[t].forcedCall = true; statusMessage = "\(players[t].name) 下一轮必须跟注" }
-        case .chaos:
+        case .chaosCommunity:
             guard !community.isEmpty else {
                 statusMessage = "需要先翻出公共牌"; return
             }
             let ci = Int.random(in: 0..<community.count)
             if let c = deck.draw() { community[ci] = c; statusMessage = "公共牌已被搅乱" }
-        case .swap, .melon:
-            // 当前 4 个 P1 扩展技能不会映射到这两类
-            return
+        case .swapOwn:
+            guard let c = deck.draw() else { statusMessage = "牌堆已空"; return }
+            let oc = ownCardIndex ?? 0
+            guard oc < players[me].holeCards.count else { return }
+            players[me].holeCards[oc] = c
+            statusMessage = "已换牌"
+        case .meloning:
+            guard let c = deck.draw() else { statusMessage = "牌堆已空"; return }
+            let worstIdx = players[me].holeCards.indices.min {
+                players[me].holeCards[$0].rank < players[me].holeCards[$1].rank
+            } ?? 0
+            players[me].holeCards[worstIdx] = c
+            statusMessage = "已替换最差的一张"
         }
-        players[me].extraSkills[si].cooldownLeft = id.cooldownTurns
-        appendLog("你 释放了【\(id.name)】(\(id.schoolLabel))")
-        emitFX(text: "【\(id.name)】", colorHex: extraSkillFXColor(id), playerIdx: me, big: true)
+
+        players[me].extraNodes[si].cooldownLeft = runtime.cooldownTurns
+        appendLog("你 释放了【\(runtime.name)】(\(runtime.schoolLabel))")
+        emitFX(text: "✨【\(runtime.name)】", colorHex: runtime.school.fxColorHex, playerIdx: me, big: true)
         screenShake += 1
-        pendingExtraSkill = nil
+        pendingExtraNodeId = nil
     }
 
-    private func extraSkillFXColor(_ id: ExtraSkillId) -> UInt32 {
-        switch id {
-        case .bruteFist: return 0xFF453A
-        case .mageMist: return 0x0A84FF
-        case .guardianHeal: return 0x32D74B
-        case .tricksterMark: return 0xBF5AF2
-        }
-    }
-
-    /// 是否有任意扩展技能需要选择目标
-    func extraSkillNeedsTarget(_ id: ExtraSkillId) -> Bool {
-        switch id.backedBy {
-        case .peek, .unlucky: return true
+    /// 是否需要选择目标
+    func extraNodeNeedsTarget(_ nodeId: String) -> Bool {
+        guard let p = players.first,
+              let st = p.extraNodes.first(where: { $0.id == nodeId }) else { return false }
+        switch st.node.effect {
+        case .peek, .forceCall: return true
         default: return false
         }
     }

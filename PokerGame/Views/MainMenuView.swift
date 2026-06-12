@@ -2,7 +2,9 @@ import SwiftUI
 
 struct MainMenuView: View {
     @EnvironmentObject var store: WalletStore
-    @State private var showShop = false
+    @EnvironmentObject var tree: SkillTreeStore
+    @State private var showSkillTree = false
+    @State private var showMySkills = false
     @State private var showBailout = false
     /// 通过外部回调触发"开始一局"，由 RootView 决定是否进入 GameView
     var onStart: () -> Void
@@ -12,7 +14,6 @@ struct MainMenuView: View {
             background
 
             VStack(spacing: 22) {
-                // 顶部钱包条
                 walletBar
                     .padding(.top, 8)
 
@@ -31,17 +32,27 @@ struct MainMenuView: View {
 
                 VStack(spacing: 14) {
                     primaryButton
-                    secondaryButton(title: "技能商店",
-                                    systemImage: "bag.fill",
-                                    color: .indigo) { showShop = true }
+                    secondaryButton(title: "技能树",
+                                    systemImage: "tree.fill",
+                                    color: .indigo) { showSkillTree = true }
+                    secondaryButton(title: "我的技能",
+                                    systemImage: "rectangle.stack.person.crop.fill",
+                                    color: .teal) { showMySkills = true }
                 }
                 .padding(.horizontal, 24)
 
                 Spacer()
             }
         }
-        .sheet(isPresented: $showShop) {
-            ShopView().environmentObject(store)
+        .sheet(isPresented: $showSkillTree) {
+            SkillTreeView()
+                .environmentObject(store)
+                .environmentObject(tree)
+        }
+        .sheet(isPresented: $showMySkills) {
+            MySkillsView()
+                .environmentObject(store)
+                .environmentObject(tree)
         }
         .sheet(isPresented: $showBailout) {
             BailoutView().environmentObject(store)
